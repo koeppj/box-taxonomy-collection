@@ -1351,7 +1351,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "7b1739a7-5478-4c03-8ffa-cfecddaf6441",
+				"id": "874f6185-07cc-4b88-800b-ed42875531c5",
 				"type": "text/javascript",
 				"packages": {},
 				"requests": {},
@@ -1634,7 +1634,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "1ae6627b-d60a-4643-90a8-207f382f0633",
+				"id": "72f2e37c-24ba-45e0-b778-5cdb170976d0",
 				"type": "text/javascript",
 				"packages": {},
 				"requests": {},
@@ -1660,6 +1660,11 @@
 		{
 			"key": "namespace",
 			"value": "enterprise_1206764763"
+		},
+		{
+			"key": "lib.J",
+			"value": "",
+			"type": "default"
 		}
 	]
 }
