@@ -1351,7 +1351,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "b97bb3f4-f305-42ad-948d-4d2490f2b2f3",
+				"id": "9293da0e-62a1-4992-99bb-4a04588e23e4",
 				"type": "text/javascript",
 				"packages": {},
 				"requests": {},
@@ -1634,7 +1634,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "8b40debf-1e68-40ea-b72a-938ba2c846c2",
+				"id": "4ddca882-f812-4b5a-836d-ab6a0a800881",
 				"type": "text/javascript",
 				"packages": {},
 				"requests": {},
@@ -1662,7 +1662,7 @@
 			"value": "enterprise_1206764763"
 		},
 		{
-			"key": "lib.JSRS",
+			"key": "lib.JSRSASign",
 			"value": ""
 		}
 	]
