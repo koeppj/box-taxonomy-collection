@@ -1124,12 +1124,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key",
+							"raw": "https://{{api.box.com}}/2.0/metadata_taxonomies/:namespace/:taxonomy_key",
 							"protocol": "https",
 							"host": [
-								"api",
-								"box",
-								"com"
+								"{{api.box.com}}"
 							],
 							"path": [
 								"2.0",
