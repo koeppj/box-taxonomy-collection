@@ -1,0 +1,1746 @@
+{
+	"info": {
+		"_postman_id": "26432793-fc9bc4eb-db64-4d7a-8d0c-c5802d120035",
+		"name": "Metadata Taxonomies",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Taxonomies",
+			"item": [
+				{
+					"name": "Levels",
+					"item": [
+						{
+							"name": "Get Taxonomy Level",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "be38fa34-2bbc-44e6-bd5b-77f33101e474",
+										"exec": [
+											"/* global pm */",
+											"",
+											"/**",
+											" * Pre-request script ran before every API request.",
+											" *",
+											" * Used to notify users that their access token has expired",
+											" */",
+											"",
+											"// determine if the Access Token has expired",
+											"const expiresAt = pm.environment.get('expires_at')",
+											"const expired = Date.now() > Number(expiresAt)",
+											"",
+											"// determine if the user has auto-refresh enabled",
+											"const autoRefresh = String(pm.environment.get('enable_auto_refresh_access_token')) === 'true'",
+											"",
+											"// determine if we have all the client credentials needed in the environment",
+											"const hasClientId = String(pm.environment.get('client_id')).length === 32",
+											"const hasClientSecret = String(pm.environment.get('client_secret')).length === 32",
+											"const hasRefreshToken = String(pm.environment.get('refresh_token')).length === 64",
+											"const hasAllCredentials = hasClientId && hasClientSecret && hasRefreshToken",
+											"",
+											"// if the access token expired and auto refresh has been set, use the refresh",
+											"// token to create a new access token",
+											"if (expired && autoRefresh && hasAllCredentials) {",
+											"  // send a new API request to refresh the access token",
+											"  pm.sendRequest({",
+											"    url: 'https://api.box.com/oauth2/token',",
+											"    method: 'POST',",
+											"    headers: { 'Content-Type': 'Content-Type: application/x-www-form-urlencoded' },",
+											"    body: {",
+											"      mode: 'urlencoded',",
+											"      urlencoded: [",
+											"        { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+											"        { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+											"        { key: 'refresh_token', value: pm.environment.get('refresh_token'), disabled: false },",
+											"        { key: 'grant_type', value: 'refresh_token', disabled: false }",
+											"      ]",
+											"    }",
+											"  }, function (error, response) {",
+											"    if (error || response.json().error) {",
+											"      // if an error occured, log the error and raise a message to the user.",
+											"      console.log('Could not refresh the access token')",
+											"      console.log(error)",
+											"      console.log(response.json())",
+											"      throw new Error('Could not refresh the access token. Check the console for more details.')",
+											"    } else {",
+											"      // otherwise, fetch the new access token and store it",
+											"      const data = response.json()",
+											"",
+											"      // determine when this token is set to expire at",
+											"      const newExpiresAt = Date.now() + data.expires_in * 1000",
+											"      // store the new variables in the environment",
+											"      pm.environment.set('access_token', data.access_token)",
+											"      pm.environment.set('refresh_token', data.refresh_token)",
+											"      pm.environment.set('expires_at', newExpiresAt)",
+											"    }",
+											"  })",
+											"} else if (expired) {",
+											"  // otherwise, throw a message to the user if the access token expired.",
+											"  throw new Error('Access token expired. Please use the \"Authorization => Refresh access token\" API to request a new token.')",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"id": "26432793-1365237f-8abe-4dc9-926b-ce40a06f8046",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/levels/:level",
+									"protocol": "https",
+									"host": [
+										"api",
+										"box",
+										"com"
+									],
+									"path": [
+										"2.0",
+										"metadata_taxonomies",
+										":namespace",
+										":taxonomy_key",
+										"levels",
+										":level"
+									],
+									"variable": [
+										{
+											"key": "namespace",
+											"value": "{{namespace}}"
+										},
+										{
+											"key": "taxonomy_key",
+											"value": "box_office_locations"
+										},
+										{
+											"key": "level",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Taxonomy Level",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "c6083eab-a281-45e5-a73d-dccb81cd4f14",
+										"exec": [
+											"/* global pm */",
+											"",
+											"/**",
+											" * Pre-request script ran before every API request.",
+											" *",
+											" * Used to notify users that their access token has expired",
+											" */",
+											"",
+											"// determine if the Access Token has expired",
+											"const expiresAt = pm.environment.get('expires_at')",
+											"const expired = Date.now() > Number(expiresAt)",
+											"",
+											"// determine if the user has auto-refresh enabled",
+											"const autoRefresh = String(pm.environment.get('enable_auto_refresh_access_token')) === 'true'",
+											"",
+											"// determine if we have all the client credentials needed in the environment",
+											"const hasClientId = String(pm.environment.get('client_id')).length === 32",
+											"const hasClientSecret = String(pm.environment.get('client_secret')).length === 32",
+											"const hasRefreshToken = String(pm.environment.get('refresh_token')).length === 64",
+											"const hasAllCredentials = hasClientId && hasClientSecret && hasRefreshToken",
+											"",
+											"// if the access token expired and auto refresh has been set, use the refresh",
+											"// token to create a new access token",
+											"if (expired && autoRefresh && hasAllCredentials) {",
+											"  // send a new API request to refresh the access token",
+											"  pm.sendRequest({",
+											"    url: 'https://api.box.com/oauth2/token',",
+											"    method: 'POST',",
+											"    headers: { 'Content-Type': 'Content-Type: application/x-www-form-urlencoded' },",
+											"    body: {",
+											"      mode: 'urlencoded',",
+											"      urlencoded: [",
+											"        { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+											"        { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+											"        { key: 'refresh_token', value: pm.environment.get('refresh_token'), disabled: false },",
+											"        { key: 'grant_type', value: 'refresh_token', disabled: false }",
+											"      ]",
+											"    }",
+											"  }, function (error, response) {",
+											"    if (error || response.json().error) {",
+											"      // if an error occured, log the error and raise a message to the user.",
+											"      console.log('Could not refresh the access token')",
+											"      console.log(error)",
+											"      console.log(response.json())",
+											"      throw new Error('Could not refresh the access token. Check the console for more details.')",
+											"    } else {",
+											"      // otherwise, fetch the new access token and store it",
+											"      const data = response.json()",
+											"",
+											"      // determine when this token is set to expire at",
+											"      const newExpiresAt = Date.now() + data.expires_in * 1000",
+											"      // store the new variables in the environment",
+											"      pm.environment.set('access_token', data.access_token)",
+											"      pm.environment.set('refresh_token', data.refresh_token)",
+											"      pm.environment.set('expires_at', newExpiresAt)",
+											"    }",
+											"  })",
+											"} else if (expired) {",
+											"  // otherwise, throw a message to the user if the access token expired.",
+											"  throw new Error('Access token expired. Please use the \"Authorization => Refresh access token\" API to request a new token.')",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"id": "26432793-80cb8380-9f2a-4520-82a0-3f4561883d54",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "headerPrefix",
+											"value": "Bearer",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \"displayName\": \"States\", \n     \"description\": \"This is the highest Geography region we support\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/levels",
+									"protocol": "https",
+									"host": [
+										"api",
+										"box",
+										"com"
+									],
+									"path": [
+										"2.0",
+										"metadata_taxonomies",
+										":namespace",
+										":taxonomy_key",
+										"levels"
+									],
+									"variable": [
+										{
+											"key": "namespace",
+											"value": "{{namespace}}"
+										},
+										{
+											"key": "taxonomy_key",
+											"value": "states"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Taxonomy Level",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "23fc2c30-102e-4b2f-b0f9-7d6cff9f2e42",
+										"exec": [
+											"/* global pm */",
+											"",
+											"/**",
+											" * Pre-request script ran before every API request.",
+											" *",
+											" * Used to notify users that their access token has expired",
+											" */",
+											"",
+											"// determine if the Access Token has expired",
+											"const expiresAt = pm.environment.get('expires_at')",
+											"const expired = Date.now() > Number(expiresAt)",
+											"",
+											"// determine if the user has auto-refresh enabled",
+											"const autoRefresh = String(pm.environment.get('enable_auto_refresh_access_token')) === 'true'",
+											"",
+											"// determine if we have all the client credentials needed in the environment",
+											"const hasClientId = String(pm.environment.get('client_id')).length === 32",
+											"const hasClientSecret = String(pm.environment.get('client_secret')).length === 32",
+											"const hasRefreshToken = String(pm.environment.get('refresh_token')).length === 64",
+											"const hasAllCredentials = hasClientId && hasClientSecret && hasRefreshToken",
+											"",
+											"// if the access token expired and auto refresh has been set, use the refresh",
+											"// token to create a new access token",
+											"if (expired && autoRefresh && hasAllCredentials) {",
+											"  // send a new API request to refresh the access token",
+											"  pm.sendRequest({",
+											"    url: 'https://api.box.com/oauth2/token',",
+											"    method: 'POST',",
+											"    headers: { 'Content-Type': 'Content-Type: application/x-www-form-urlencoded' },",
+											"    body: {",
+											"      mode: 'urlencoded',",
+											"      urlencoded: [",
+											"        { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+											"        { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+											"        { key: 'refresh_token', value: pm.environment.get('refresh_token'), disabled: false },",
+											"        { key: 'grant_type', value: 'refresh_token', disabled: false }",
+											"      ]",
+											"    }",
+											"  }, function (error, response) {",
+											"    if (error || response.json().error) {",
+											"      // if an error occured, log the error and raise a message to the user.",
+											"      console.log('Could not refresh the access token')",
+											"      console.log(error)",
+											"      console.log(response.json())",
+											"      throw new Error('Could not refresh the access token. Check the console for more details.')",
+											"    } else {",
+											"      // otherwise, fetch the new access token and store it",
+											"      const data = response.json()",
+											"",
+											"      // determine when this token is set to expire at",
+											"      const newExpiresAt = Date.now() + data.expires_in * 1000",
+											"      // store the new variables in the environment",
+											"      pm.environment.set('access_token', data.access_token)",
+											"      pm.environment.set('refresh_token', data.refresh_token)",
+											"      pm.environment.set('expires_at', newExpiresAt)",
+											"    }",
+											"  })",
+											"} else if (expired) {",
+											"  // otherwise, throw a message to the user if the access token expired.",
+											"  throw new Error('Access token expired. Please use the \"Authorization => Refresh access token\" API to request a new token.')",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"id": "26432793-c3c767b1-8a98-4945-8ace-6650ffe7b837",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "headerPrefix",
+											"value": "Bearer",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \"displayName\": \"States\", \n     \"description\": \"This is the highest Geography region we support\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/levels",
+									"protocol": "https",
+									"host": [
+										"api",
+										"box",
+										"com"
+									],
+									"path": [
+										"2.0",
+										"metadata_taxonomies",
+										":namespace",
+										":taxonomy_key",
+										"levels"
+									],
+									"variable": [
+										{
+											"key": "namespace",
+											"value": "{{namespace}}"
+										},
+										{
+											"key": "taxonomy_key",
+											"value": "states"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Taxonomy Level",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "cb8c8b6c-303a-4cea-8b91-ce81567edaf8",
+										"exec": [
+											"/* global pm */",
+											"",
+											"/**",
+											" * Pre-request script ran before every API request.",
+											" *",
+											" * Used to notify users that their access token has expired",
+											" */",
+											"",
+											"// determine if the Access Token has expired",
+											"const expiresAt = pm.environment.get('expires_at')",
+											"const expired = Date.now() > Number(expiresAt)",
+											"",
+											"// determine if the user has auto-refresh enabled",
+											"const autoRefresh = String(pm.environment.get('enable_auto_refresh_access_token')) === 'true'",
+											"",
+											"// determine if we have all the client credentials needed in the environment",
+											"const hasClientId = String(pm.environment.get('client_id')).length === 32",
+											"const hasClientSecret = String(pm.environment.get('client_secret')).length === 32",
+											"const hasRefreshToken = String(pm.environment.get('refresh_token')).length === 64",
+											"const hasAllCredentials = hasClientId && hasClientSecret && hasRefreshToken",
+											"",
+											"// if the access token expired and auto refresh has been set, use the refresh",
+											"// token to create a new access token",
+											"if (expired && autoRefresh && hasAllCredentials) {",
+											"  // send a new API request to refresh the access token",
+											"  pm.sendRequest({",
+											"    url: 'https://api.box.com/oauth2/token',",
+											"    method: 'POST',",
+											"    headers: { 'Content-Type': 'Content-Type: application/x-www-form-urlencoded' },",
+											"    body: {",
+											"      mode: 'urlencoded',",
+											"      urlencoded: [",
+											"        { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+											"        { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+											"        { key: 'refresh_token', value: pm.environment.get('refresh_token'), disabled: false },",
+											"        { key: 'grant_type', value: 'refresh_token', disabled: false }",
+											"      ]",
+											"    }",
+											"  }, function (error, response) {",
+											"    if (error || response.json().error) {",
+											"      // if an error occured, log the error and raise a message to the user.",
+											"      console.log('Could not refresh the access token')",
+											"      console.log(error)",
+											"      console.log(response.json())",
+											"      throw new Error('Could not refresh the access token. Check the console for more details.')",
+											"    } else {",
+											"      // otherwise, fetch the new access token and store it",
+											"      const data = response.json()",
+											"",
+											"      // determine when this token is set to expire at",
+											"      const newExpiresAt = Date.now() + data.expires_in * 1000",
+											"      // store the new variables in the environment",
+											"      pm.environment.set('access_token', data.access_token)",
+											"      pm.environment.set('refresh_token', data.refresh_token)",
+											"      pm.environment.set('expires_at', newExpiresAt)",
+											"    }",
+											"  })",
+											"} else if (expired) {",
+											"  // otherwise, throw a message to the user if the access token expired.",
+											"  throw new Error('Access token expired. Please use the \"Authorization => Refresh access token\" API to request a new token.')",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"id": "26432793-ed40d18c-aeb5-45ec-98a3-261cb0702ac7",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \"displayName\": \"States\", \n     \"description\": \"This is the highest Geography region we support\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/levels/:level",
+									"protocol": "https",
+									"host": [
+										"api",
+										"box",
+										"com"
+									],
+									"path": [
+										"2.0",
+										"metadata_taxonomies",
+										":namespace",
+										":taxonomy_key",
+										"levels",
+										":level"
+									],
+									"variable": [
+										{
+											"key": "namespace",
+											"value": "{{namespace}}"
+										},
+										{
+											"key": "taxonomy_key",
+											"value": "states"
+										},
+										{
+											"key": "level",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "26432793-a878939d-e670-4cf9-b6b5-aab669a4f724"
+				},
+				{
+					"name": "Nodes",
+					"item": [
+						{
+							"name": "Get Taxonomy Node",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "c176852b-ca1f-4d89-8fb5-28d2cf90fe45",
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"id": "26432793-95588558-5c8d-46ef-9055-436c36165fdb",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/nodes/:node_id",
+									"protocol": "https",
+									"host": [
+										"api",
+										"box",
+										"com"
+									],
+									"path": [
+										"2.0",
+										"metadata_taxonomies",
+										":namespace",
+										":taxonomy_key",
+										"nodes",
+										":node_id"
+									],
+									"variable": [
+										{
+											"key": "namespace",
+											"value": "{{namespace}}"
+										},
+										{
+											"key": "taxonomy_key",
+											"value": "box_office_locations"
+										},
+										{
+											"key": "node_id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Taxonomy Nodes",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "77951a9c-16b2-4d53-885e-66dac89fa8fa",
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"id": "26432793-d60272fa-0e57-4093-9028-f7d19a844542",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/nodes/",
+									"protocol": "https",
+									"host": [
+										"api",
+										"box",
+										"com"
+									],
+									"path": [
+										"2.0",
+										"metadata_taxonomies",
+										":namespace",
+										":taxonomy_key",
+										"nodes",
+										""
+									],
+									"query": [
+										{
+											"key": "level",
+											"value": null,
+											"description": "Return only nodes at this level (optional)",
+											"disabled": true
+										},
+										{
+											"key": "parent-id",
+											"value": null,
+											"description": "Return only nodes which have this exact parent (optional)",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": null,
+											"description": "How many results to return - Default 50 (optional)",
+											"disabled": true
+										},
+										{
+											"key": "marker",
+											"value": null,
+											"description": "Continue previous search from returned marker (optional)",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "namespace",
+											"value": "{{namespace}}"
+										},
+										{
+											"key": "taxonomy_key",
+											"value": "box_office_locations"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Taxonomy Node",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "56c5d063-4da3-4407-ac8b-5dfcd65686da",
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"id": "26432793-c29240e0-30c0-4467-a2f9-f15d36a5b411",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"displayName\":\"Michigan\",\n  \"level\": 1\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/nodes/",
+									"protocol": "https",
+									"host": [
+										"api",
+										"box",
+										"com"
+									],
+									"path": [
+										"2.0",
+										"metadata_taxonomies",
+										":namespace",
+										":taxonomy_key",
+										"nodes",
+										""
+									],
+									"variable": [
+										{
+											"key": "namespace",
+											"value": "{{namespace}}"
+										},
+										{
+											"key": "taxonomy_key",
+											"value": "states"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Taxonomy Node",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "b06994fd-6f03-4bb1-997c-d5feb4829635",
+										"exec": [
+											"/* global pm */",
+											"",
+											"/**",
+											" * Pre-request script ran before every API request.",
+											" *",
+											" * Used to notify users that their access token has expired",
+											" */",
+											"",
+											"// determine if the Access Token has expired",
+											"const expiresAt = pm.environment.get('expires_at')",
+											"const expired = Date.now() > Number(expiresAt)",
+											"",
+											"// determine if the user has auto-refresh enabled",
+											"const autoRefresh = String(pm.environment.get('enable_auto_refresh_access_token')) === 'true'",
+											"",
+											"// determine if we have all the client credentials needed in the environment",
+											"const hasClientId = String(pm.environment.get('client_id')).length === 32",
+											"const hasClientSecret = String(pm.environment.get('client_secret')).length === 32",
+											"const hasRefreshToken = String(pm.environment.get('refresh_token')).length === 64",
+											"const hasAllCredentials = hasClientId && hasClientSecret && hasRefreshToken",
+											"",
+											"// if the access token expired and auto refresh has been set, use the refresh",
+											"// token to create a new access token",
+											"if (expired && autoRefresh && hasAllCredentials) {",
+											"  // send a new API request to refresh the access token",
+											"  pm.sendRequest({",
+											"    url: 'https://api.box.com/oauth2/token',",
+											"    method: 'POST',",
+											"    headers: { 'Content-Type': 'Content-Type: application/x-www-form-urlencoded' },",
+											"    body: {",
+											"      mode: 'urlencoded',",
+											"      urlencoded: [",
+											"        { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+											"        { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+											"        { key: 'refresh_token', value: pm.environment.get('refresh_token'), disabled: false },",
+											"        { key: 'grant_type', value: 'refresh_token', disabled: false }",
+											"      ]",
+											"    }",
+											"  }, function (error, response) {",
+											"    if (error || response.json().error) {",
+											"      // if an error occured, log the error and raise a message to the user.",
+											"      console.log('Could not refresh the access token')",
+											"      console.log(error)",
+											"      console.log(response.json())",
+											"      throw new Error('Could not refresh the access token. Check the console for more details.')",
+											"    } else {",
+											"      // otherwise, fetch the new access token and store it",
+											"      const data = response.json()",
+											"",
+											"      // determine when this token is set to expire at",
+											"      const newExpiresAt = Date.now() + data.expires_in * 1000",
+											"      // store the new variables in the environment",
+											"      pm.environment.set('access_token', data.access_token)",
+											"      pm.environment.set('refresh_token', data.refresh_token)",
+											"      pm.environment.set('expires_at', newExpiresAt)",
+											"    }",
+											"  })",
+											"} else if (expired) {",
+											"  // otherwise, throw a message to the user if the access token expired.",
+											"  throw new Error('Access token expired. Please use the \"Authorization => Refresh access token\" API to request a new token.')",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"id": "26432793-f53fdc2b-3fe7-4765-a724-f9b6fbc6bf11",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"displayName\":\"Michigan\",\n  \"level\": 1\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/nodes/:node_id",
+									"protocol": "https",
+									"host": [
+										"api",
+										"box",
+										"com"
+									],
+									"path": [
+										"2.0",
+										"metadata_taxonomies",
+										":namespace",
+										":taxonomy_key",
+										"nodes",
+										":node_id"
+									],
+									"variable": [
+										{
+											"key": "namespace",
+											"value": "{{namespace}}"
+										},
+										{
+											"key": "taxonomy_key",
+											"value": ""
+										},
+										{
+											"key": "node_id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Taxonomy Node",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "be5e6e02-4453-41e5-ac69-f3cdda635209",
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"id": "26432793-a2b71881-36d3-4137-bdcc-094532970271",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/nodes/:node_id",
+									"protocol": "https",
+									"host": [
+										"api",
+										"box",
+										"com"
+									],
+									"path": [
+										"2.0",
+										"metadata_taxonomies",
+										":namespace",
+										":taxonomy_key",
+										"nodes",
+										":node_id"
+									],
+									"variable": [
+										{
+											"key": "namespace",
+											"value": "{{namespace}}"
+										},
+										{
+											"key": "taxonomy_key",
+											"value": "test2"
+										},
+										{
+											"key": "node_id",
+											"value": "46c83e35-af5e-4c6e-a096-688b2de36d2d"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "26432793-f4c00472-1596-41e6-a34f-78dba5865531"
+				},
+				{
+					"name": "Create Taxonomy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"/* global pm */",
+									"",
+									"/**",
+									" * Pre-request script ran before every API request.",
+									" *",
+									" * Used to notify users that their access token has expired",
+									" */",
+									"",
+									"// determine if the Access Token has expired",
+									"const expiresAt = pm.environment.get('expires_at')",
+									"const expired = Date.now() > Number(expiresAt)",
+									"",
+									"// determine if the user has auto-refresh enabled",
+									"const autoRefresh = String(pm.environment.get('enable_auto_refresh_access_token')) === 'true'",
+									"",
+									"// determine if we have all the client credentials needed in the environment",
+									"const hasClientId = String(pm.environment.get('client_id')).length === 32",
+									"const hasClientSecret = String(pm.environment.get('client_secret')).length === 32",
+									"const hasRefreshToken = String(pm.environment.get('refresh_token')).length === 64",
+									"const hasAllCredentials = hasClientId && hasClientSecret && hasRefreshToken",
+									"",
+									"// if the access token expired and auto refresh has been set, use the refresh",
+									"// token to create a new access token",
+									"if (expired && autoRefresh && hasAllCredentials) {",
+									"  // send a new API request to refresh the access token",
+									"  pm.sendRequest({",
+									"    url: 'https://api.box.com/oauth2/token',",
+									"    method: 'POST',",
+									"    headers: { 'Content-Type': 'Content-Type: application/x-www-form-urlencoded' },",
+									"    body: {",
+									"      mode: 'urlencoded',",
+									"      urlencoded: [",
+									"        { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+									"        { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+									"        { key: 'refresh_token', value: pm.environment.get('refresh_token'), disabled: false },",
+									"        { key: 'grant_type', value: 'refresh_token', disabled: false }",
+									"      ]",
+									"    }",
+									"  }, function (error, response) {",
+									"    if (error || response.json().error) {",
+									"      // if an error occured, log the error and raise a message to the user.",
+									"      console.log('Could not refresh the access token')",
+									"      console.log(error)",
+									"      console.log(response.json())",
+									"      throw new Error('Could not refresh the access token. Check the console for more details.')",
+									"    } else {",
+									"      // otherwise, fetch the new access token and store it",
+									"      const data = response.json()",
+									"",
+									"      // determine when this token is set to expire at",
+									"      const newExpiresAt = Date.now() + data.expires_in * 1000",
+									"      // store the new variables in the environment",
+									"      pm.environment.set('access_token', data.access_token)",
+									"      pm.environment.set('refresh_token', data.refresh_token)",
+									"      pm.environment.set('expires_at', newExpiresAt)",
+									"    }",
+									"  })",
+									"} else if (expired) {",
+									"  // otherwise, throw a message to the user if the access token expired.",
+									"  throw new Error('Access token expired. Please use the \"Authorization => Refresh access token\" API to request a new token.')",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"id": "70cb07f5-c21c-4099-bd79-62bf23035530"
+							}
+						}
+					],
+					"id": "26432793-6cb258e1-2554-4851-aedc-fafc599fc4ce",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n  \"key\" : \"geography\", // Optional, if not provided is generated from display name\n  \"displayName\" : \"Geography\", // required\n  \"namespace\" : \"{{EID}}}}\" // required\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_taxonomies/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_taxonomies",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Taxonomies",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "70042756-52d5-42ce-9c73-38b59092fe12",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"id": "26432793-c4718e86-26b1-41ac-879d-2015be3b3484",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_taxonomies",
+								":namespace"
+							],
+							"variable": [
+								{
+									"key": "namespace",
+									"value": "{{namespace}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Taxonomy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "53917bc9-f4c7-4e66-89ee-b51faa985b52",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"id": "26432793-e6b9bb2c-6abe-4344-812c-cb5ae70f48e6",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_taxonomies",
+								":namespace",
+								":taxonomy_key"
+							],
+							"variable": [
+								{
+									"key": "namespace",
+									"value": "{{namespace}}"
+								},
+								{
+									"key": "taxonomy_key",
+									"value": "box_office_locations"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Taxonomy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"/* global pm */",
+									"",
+									"/**",
+									" * Pre-request script ran before every API request.",
+									" *",
+									" * Used to notify users that their access token has expired",
+									" */",
+									"",
+									"// determine if the Access Token has expired",
+									"const expiresAt = pm.environment.get('expires_at')",
+									"const expired = Date.now() > Number(expiresAt)",
+									"",
+									"// determine if the user has auto-refresh enabled",
+									"const autoRefresh = String(pm.environment.get('enable_auto_refresh_access_token')) === 'true'",
+									"",
+									"// determine if we have all the client credentials needed in the environment",
+									"const hasClientId = String(pm.environment.get('client_id')).length === 32",
+									"const hasClientSecret = String(pm.environment.get('client_secret')).length === 32",
+									"const hasRefreshToken = String(pm.environment.get('refresh_token')).length === 64",
+									"const hasAllCredentials = hasClientId && hasClientSecret && hasRefreshToken",
+									"",
+									"// if the access token expired and auto refresh has been set, use the refresh",
+									"// token to create a new access token",
+									"if (expired && autoRefresh && hasAllCredentials) {",
+									"  // send a new API request to refresh the access token",
+									"  pm.sendRequest({",
+									"    url: 'https://api.box.com/oauth2/token',",
+									"    method: 'POST',",
+									"    headers: { 'Content-Type': 'Content-Type: application/x-www-form-urlencoded' },",
+									"    body: {",
+									"      mode: 'urlencoded',",
+									"      urlencoded: [",
+									"        { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+									"        { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+									"        { key: 'refresh_token', value: pm.environment.get('refresh_token'), disabled: false },",
+									"        { key: 'grant_type', value: 'refresh_token', disabled: false }",
+									"      ]",
+									"    }",
+									"  }, function (error, response) {",
+									"    if (error || response.json().error) {",
+									"      // if an error occured, log the error and raise a message to the user.",
+									"      console.log('Could not refresh the access token')",
+									"      console.log(error)",
+									"      console.log(response.json())",
+									"      throw new Error('Could not refresh the access token. Check the console for more details.')",
+									"    } else {",
+									"      // otherwise, fetch the new access token and store it",
+									"      const data = response.json()",
+									"",
+									"      // determine when this token is set to expire at",
+									"      const newExpiresAt = Date.now() + data.expires_in * 1000",
+									"      // store the new variables in the environment",
+									"      pm.environment.set('access_token', data.access_token)",
+									"      pm.environment.set('refresh_token', data.refresh_token)",
+									"      pm.environment.set('expires_at', newExpiresAt)",
+									"    }",
+									"  })",
+									"} else if (expired) {",
+									"  // otherwise, throw a message to the user if the access token expired.",
+									"  throw new Error('Access token expired. Please use the \"Authorization => Refresh access token\" API to request a new token.')",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"id": "a18fc987-c721-45e6-a6d4-de6eabadeae8"
+							}
+						}
+					],
+					"id": "26432793-0633e9f8-17d7-4f1c-a844-353b033b347c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n  \"displayName\" : \"States\" // example\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_taxonomies",
+								":namespace",
+								":taxonomy_key"
+							],
+							"variable": [
+								{
+									"id": "5bb97351-e190-4620-b4cf-d9b5899b2770",
+									"key": "namespace",
+									"value": "{{EID}}"
+								},
+								{
+									"id": "15340716-b4de-411a-99b4-09c212db1c55",
+									"key": "taxonomy_key",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Taxonomy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6122a6e3-457f-4a8d-871b-519a3661e909",
+								"exec": [
+									"/* global pm */",
+									"",
+									"/**",
+									" * Pre-request script ran before every API request.",
+									" *",
+									" * Used to notify users that their access token has expired",
+									" */",
+									"",
+									"// determine if the Access Token has expired",
+									"const expiresAt = pm.environment.get('expires_at')",
+									"const expired = Date.now() > Number(expiresAt)",
+									"",
+									"// determine if the user has auto-refresh enabled",
+									"const autoRefresh = String(pm.environment.get('enable_auto_refresh_access_token')) === 'true'",
+									"",
+									"// determine if we have all the client credentials needed in the environment",
+									"const hasClientId = String(pm.environment.get('client_id')).length === 32",
+									"const hasClientSecret = String(pm.environment.get('client_secret')).length === 32",
+									"const hasRefreshToken = String(pm.environment.get('refresh_token')).length === 64",
+									"const hasAllCredentials = hasClientId && hasClientSecret && hasRefreshToken",
+									"",
+									"// if the access token expired and auto refresh has been set, use the refresh",
+									"// token to create a new access token",
+									"if (expired && autoRefresh && hasAllCredentials) {",
+									"  // send a new API request to refresh the access token",
+									"  pm.sendRequest({",
+									"    url: 'https://api.box.com/oauth2/token',",
+									"    method: 'POST',",
+									"    headers: { 'Content-Type': 'Content-Type: application/x-www-form-urlencoded' },",
+									"    body: {",
+									"      mode: 'urlencoded',",
+									"      urlencoded: [",
+									"        { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+									"        { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+									"        { key: 'refresh_token', value: pm.environment.get('refresh_token'), disabled: false },",
+									"        { key: 'grant_type', value: 'refresh_token', disabled: false }",
+									"      ]",
+									"    }",
+									"  }, function (error, response) {",
+									"    if (error || response.json().error) {",
+									"      // if an error occured, log the error and raise a message to the user.",
+									"      console.log('Could not refresh the access token')",
+									"      console.log(error)",
+									"      console.log(response.json())",
+									"      throw new Error('Could not refresh the access token. Check the console for more details.')",
+									"    } else {",
+									"      // otherwise, fetch the new access token and store it",
+									"      const data = response.json()",
+									"",
+									"      // determine when this token is set to expire at",
+									"      const newExpiresAt = Date.now() + data.expires_in * 1000",
+									"      // store the new variables in the environment",
+									"      pm.environment.set('access_token', data.access_token)",
+									"      pm.environment.set('refresh_token', data.refresh_token)",
+									"      pm.environment.set('expires_at', newExpiresAt)",
+									"    }",
+									"  })",
+									"} else if (expired) {",
+									"  // otherwise, throw a message to the user if the access token expired.",
+									"  throw new Error('Access token expired. Please use the \"Authorization => Refresh access token\" API to request a new token.')",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"id": "26432793-a0828f15-7772-4dc2-9788-f88007b2ebc3",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://{{api.box.com}}/2.0/metadata_taxonomies/:namespace/:taxonomy_key",
+							"protocol": "https",
+							"host": [
+								"{{api.box.com}}"
+							],
+							"path": [
+								"2.0",
+								"metadata_taxonomies",
+								":namespace",
+								":taxonomy_key"
+							],
+							"variable": [
+								{
+									"key": "namespace",
+									"value": "{{namespace}}"
+								},
+								{
+									"key": "taxonomy_key",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "26432793-6be43440-756b-4d02-8da0-2291997cec8b"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "7b1739a7-5478-4c03-8ffa-cfecddaf6441",
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					"/* global pm */",
+					"/* global KEYUTIL */",
+					"/* global KJUR */",
+					"",
+					"/* eslint-disable camelcase */",
+					"/* eslint-disable object-shorthand */",
+					"",
+					"const check_script_execution = () => {",
+					"  // determine if this script be executed",
+					"  let reqUrl = pm.request.url.protocol + '://' + pm.request.url.host",
+					"  for (const itemPath of pm.request.url.path) {",
+					"    reqUrl = reqUrl + '/' + itemPath",
+					"  }",
+					"",
+					"  // Reject requests where auth type exists",
+					"  if (pm.request.auth) { return false }",
+					"",
+					"  console.info('Checking URI')",
+					"  console.info('{{api.box.com}}')",
+					"",
+					"  // black list",
+					"  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{api.box.com}}/oauth2')) { return false }",
+					"",
+					"  // white list",
+					"  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{api.box.com}}')) { return true }",
+					"  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{upload.box.com}}')) { return true }",
+					"  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{dl.boxcloud.com}}')) { return true }",
+					"",
+					"  // reject everything else",
+					"  return false",
+					"}",
+					"",
+					"const check_environment = () => {",
+					"  // check current environment name",
+					"  const env_type = pm.environment.get('box_env_type')",
+					"",
+					"  if (!env_type) { throw new Error('Unable to identify environment type. Please select a supported environment') }",
+					"",
+					"  const error_msg = []",
+					"",
+					"  // check environment variables",
+					"  if (env_type === EnvType.BEARER) {",
+					"    const access_token = pm.environment.get('access_token')",
+					"    if (!access_token) { error_msg.push('Access Token') }",
+					"  } else {",
+					"    const client_id = pm.environment.get('client_id')",
+					"    const client_secret = pm.environment.get('client_secret')",
+					"",
+					"    if (!client_id) { error_msg.push('Client_id') }",
+					"    if (!client_secret) { error_msg.push('Client secret') }",
+					"  }",
+					"  if (env_type === EnvType.OAUTH) {",
+					"    const refresh_token = pm.environment.get('refresh_token')",
+					"    if (!refresh_token) { error_msg.push('Refresh token') }",
+					"  }",
+					"",
+					"  if (env_type === EnvType.CCG || env_type === EnvType.JWT) {",
+					"    const box_subject_type = pm.environment.get('box_subject_type')",
+					"    const box_subject_id = pm.environment.get('box_subject_id')",
+					"",
+					"    if (!box_subject_type) {",
+					"      error_msg.push('Box subject type')",
+					"    } else {",
+					"      if (!(box_subject_type === 'enterprise' || box_subject_type === 'user')) {",
+					"        error_msg.push('Box subject type (enterprise or user)')",
+					"      }",
+					"    }",
+					"    if (!box_subject_id) { error_msg.push('Box subject id') }",
+					"  }",
+					"",
+					"  if (env_type === EnvType.JWT) {",
+					"    const key_id = pm.environment.get('key_id')",
+					"    const private_key_encrypted = pm.environment.get('private_key_encrypted')",
+					"    const private_key_passphrase = pm.environment.get('private_key_passphrase')",
+					"",
+					"    if (!key_id) { error_msg.push('Key id') }",
+					"    if (!private_key_encrypted) { error_msg.push('Private key') }",
+					"    if (!private_key_passphrase) { error_msg.push('Passphrase') }",
+					"  }",
+					"",
+					"  if (error_msg.length > 0) {",
+					"    // there is an error",
+					"    throw new Error('Invalid enviroment variables: ' + error_msg.join(', '))",
+					"  }",
+					"  return env_type",
+					"}",
+					"",
+					"const get_token = (urlencoded) => {",
+					"  const req = {",
+					"    url: 'https://api.box.com/oauth2/token',",
+					"    method: 'POST',",
+					"    headers: { 'Content-Type': 'Content-Type: application/x-www-form-urlencoded' },",
+					"    body: {",
+					"      mode: 'urlencoded',",
+					"      urlencoded: urlencoded",
+					"    }",
+					"  }",
+					"",
+					"  console.info('Requesting a new access token')",
+					"",
+					"  return new Promise((resolve, reject) => {",
+					"    pm.sendRequest(req, (err, resp) => {",
+					"      if (err) {",
+					"        console.warn('Could not get the access token')",
+					"        console.warn(err)",
+					"        throw new Error('Unable to obtain token, check the console for more details.')",
+					"      }",
+					"",
+					"      const data = resp.json()",
+					"      if (data.error) {",
+					"        console.warn('Could not get the access token')",
+					"        console.warn(data)",
+					"        throw new Error('Unable to obtain token, check the console for more details.')",
+					"      }",
+					"",
+					"      return resolve(data)",
+					"    })",
+					"  })",
+					"}",
+					"",
+					"async function refresh_ccg () {",
+					"  const urlencoded = [",
+					"    { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+					"    { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+					"    { key: 'box_subject_type', value: pm.environment.get('box_subject_type'), disabled: false },",
+					"    { key: 'box_subject_id', value: pm.environment.get('box_subject_id'), disabled: false },",
+					"    { key: 'grant_type', value: 'client_credentials', disabled: false }",
+					"  ]",
+					"",
+					"  return await get_token(urlencoded).then((data) => {",
+					"    const expires_at = Date.now() + (data.expires_in - 30) * 1000",
+					"    pm.environment.set('access_token', data.access_token)",
+					"    pm.environment.set('expires_at', expires_at)",
+					"  })",
+					"}",
+					"",
+					"async function refresh_oauth () {",
+					"  const urlencoded = [",
+					"    { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+					"    { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+					"    { key: 'refresh_token', value: pm.environment.get('refresh_token'), disabled: false },",
+					"    { key: 'grant_type', value: 'refresh_token', disabled: false }",
+					"  ]",
+					"",
+					"  return await get_token(urlencoded).then((data) => {",
+					"    const expires_at = Date.now() + (data.expires_in - 30) * 1000",
+					"    pm.environment.set('access_token', data.access_token)",
+					"    pm.environment.set('expires_at', expires_at)",
+					"",
+					"    const refresh_token_expires_at = Date.now() + (59 * 24 * 60 * 60 * 1000)",
+					"    pm.environment.set('refresh_token', data.refresh_token)",
+					"    pm.environment.set('refresh_token_expires_at', refresh_token_expires_at)",
+					"  })",
+					"}",
+					"",
+					"function get_jwt_assertion () {",
+					"  // libJSRSASign lib",
+					"  const libJSRSASign = pm.collectionVariables.get('libJSRSASign')",
+					"  /* eslint-disable no-global-assign */",
+					"  navigator = {}",
+					"  window = {}",
+					"  /* eslint-disable no-eval */",
+					"",
+					"  eval(libJSRSASign)",
+					"",
+					"  // UUID",
+					"  const uuid = require('uuid')",
+					"",
+					"  const private_key_encrypted = pm.environment.get('private_key_encrypted').replace(/\\\\n/g, '')",
+					"  const private_key_passphrase = pm.environment.get('private_key_passphrase')",
+					"",
+					"  const private_key = KEYUTIL.getKey(private_key_encrypted, private_key_passphrase)",
+					"",
+					"  const kid = pm.environment.get('key_id')",
+					"  const iss = pm.environment.get('client_id')",
+					"  const sub = pm.environment.get('box_subject_id')",
+					"  const box_sub_type = pm.environment.get('box_subject_type')",
+					"  const aud = 'https://' + pm.collectionVariables.get('api.box.com') + '/oauth2/token'",
+					"  const jti = uuid.v4()",
+					"  // const exp = KJUR.jws.IntDate.get(\"now + 1minute\")",
+					"  const exp = Math.floor(Date.now() / 1000) + 45",
+					"  const iat = KJUR.jws.IntDate.get('now')",
+					"",
+					"  const header = { alg: 'RS512', typ: 'JWT', kid: kid }",
+					"  //   console.log(`header: ${JSON.stringify(header)}`)",
+					"",
+					"  const claims =",
+					"      {",
+					"        iss: iss,",
+					"        sub: sub,",
+					"        box_sub_type: box_sub_type,",
+					"        aud: aud,",
+					"        jti: jti,",
+					"        exp: exp,",
+					"        iat: iat",
+					"      }",
+					"",
+					"  // console.log(`claim set: ${JSON.stringify(claims)}`)",
+					"",
+					"  const jwt = KJUR.jws.JWS.sign(null, header, claims, private_key)",
+					"  // console.log('JWT Assertion: ', jwt)",
+					"",
+					"  return jwt",
+					"}",
+					"",
+					"async function refresh_jwt (assertion) {",
+					"  const urlencoded = [",
+					"    { key: 'client_id', value: pm.environment.get('client_id'), disabled: false },",
+					"    { key: 'client_secret', value: pm.environment.get('client_secret'), disabled: false },",
+					"    { key: 'box_subject_type', value: pm.environment.get('box_subject_type'), disabled: false },",
+					"    { key: 'box_subject_id', value: pm.environment.get('box_subject_id'), disabled: false },",
+					"    { key: 'grant_type', value: 'urn:ietf:params:oauth:grant-type:jwt-bearer', disabled: false },",
+					"    { key: 'assertion', value: assertion, disabled: false }",
+					"  ]",
+					"",
+					"  return await get_token(urlencoded).then((data) => {",
+					"    const expires_at = Date.now() + (data.expires_in - 30) * 1000",
+					"    pm.environment.set('access_token', data.access_token)",
+					"    pm.environment.set('expires_at', expires_at)",
+					"  })",
+					"}",
+					"",
+					"const box_postman = () => {",
+					"  console.info('Collection variables',pm.collectionVariables.toObject())",
+					"  console.info('Request',pm.request)",
+					"",
+					"  if (!check_script_execution()) { return }",
+					"",
+					"  console.info('Pass Muster')",
+					"",
+					"  const env_type = check_environment()",
+					"",
+					"  // determine if the Access Token has expired",
+					"  const expiresAt = pm.environment.get('expires_at') || 0",
+					"  const is_expired = Date.now() > Number(expiresAt)",
+					"",
+					"  // refresh the access token if needed",
+					"  if (is_expired) {",
+					"    switch (env_type) {",
+					"      case EnvType.BEARER:",
+					"        console.info('Bearer token can not be refreshed, sending as is...')",
+					"        break",
+					"      case EnvType.OAUTH:",
+					"        /* eslint-disable no-case-declarations */",
+					"        const current_refresh_expiration = pm.environment.get('refresh_token_expires_at') || 0",
+					"        const is_expired = Date.now() > Number(current_refresh_expiration)",
+					"        if (is_expired) { throw new Error('Refresh token has expired') }",
+					"        refresh_oauth()",
+					"        break",
+					"      case EnvType.CCG:",
+					"        refresh_ccg()",
+					"        break",
+					"      case EnvType.JWT:",
+					"        const assertion = get_jwt_assertion()",
+					"        refresh_jwt(assertion)",
+					"        break",
+					"      default:",
+					"        throw new Error('Unrecognized environment. Please select one of the supported Box environments')",
+					"    }",
+					"  }",
+					"}",
+					"",
+					"// Defined environment types",
+					"const EnvType = {",
+					"  BEARER: 'BEARER',",
+					"  OAUTH: 'OAUTH',",
+					"  CCG: 'CCG',",
+					"  JWT: 'JWT'",
+					"}",
+					"",
+					"box_postman()",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "1ae6627b-d60a-4643-90a8-207f382f0633",
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api.box.com",
+			"value": "api.box.com"
+		},
+		{
+			"key": "account.box.com",
+			"value": "account.box.com"
+		},
+		{
+			"key": "upload.box.com",
+			"value": "upload.box.com"
+		},
+		{
+			"key": "namespace",
+			"value": "enterprise_1206764763"
+		}
+	]
+}
