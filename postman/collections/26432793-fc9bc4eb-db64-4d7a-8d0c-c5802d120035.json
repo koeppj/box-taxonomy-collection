@@ -1351,7 +1351,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "874f6185-07cc-4b88-800b-ed42875531c5",
+				"id": "b97bb3f4-f305-42ad-948d-4d2490f2b2f3",
 				"type": "text/javascript",
 				"packages": {},
 				"requests": {},
@@ -1634,7 +1634,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "72f2e37c-24ba-45e0-b778-5cdb170976d0",
+				"id": "8b40debf-1e68-40ea-b72a-938ba2c846c2",
 				"type": "text/javascript",
 				"packages": {},
 				"requests": {},
@@ -1662,9 +1662,8 @@
 			"value": "enterprise_1206764763"
 		},
 		{
-			"key": "lib.J",
-			"value": "",
-			"type": "default"
+			"key": "lib.JSRS",
+			"value": ""
 		}
 	]
 }
