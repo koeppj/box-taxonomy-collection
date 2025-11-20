@@ -822,14 +822,13 @@
 									}
 								},
 								"url": {
-									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/nodes/:node_id",
-									"protocol": "https",
+									"raw": "https:/{{api.box.com}}/2.0/metadata_taxonomies/:namespace/:taxonomy_key/nodes/:node_id",
 									"host": [
-										"api",
-										"box",
-										"com"
+										"https"
 									],
+									"port": "",
 									"path": [
+										"{{api.box.com}}",
 										"2.0",
 										"metadata_taxonomies",
 										":namespace",
