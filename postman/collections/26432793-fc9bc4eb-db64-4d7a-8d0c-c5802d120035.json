@@ -615,12 +615,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "https://api.box.com/2.0/metadata_taxonomies/:namespace/:taxonomy_key/nodes/",
+									"raw": "https://{{api.box.com}}/2.0/metadata_taxonomies/:namespace/:taxonomy_key/nodes/",
 									"protocol": "https",
 									"host": [
-										"api",
-										"box",
-										"com"
+										"{{api.box.com}}"
 									],
 									"path": [
 										"2.0",
